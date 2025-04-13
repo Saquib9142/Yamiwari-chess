@@ -1,25 +1,36 @@
-body {
-  font-family: sans-serif;
-  text-align: center;
-}
+const board = document.getElementById('chessboard');
+let selected = null;
 
-#chessboard {
-  display: grid;
-  grid-template-columns: repeat(8, 60px);
-  grid-template-rows: repeat(8, 60px);
-  margin: 20px auto;
-  width: 480px;
-}
+const pieces = {
+  0: ["♜","♞","♝","♛","♚","♝","♞","♜"],
+  1: Array(8).fill("♟"),
+  6: Array(8).fill("♙"),
+  7: ["♖","♘","♗","♕","♔","♗","♘","♖"]
+};
 
-.square {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 36px;
-  cursor: pointer;
-}
+for (let row = 0; row < 8; row++) {
+  for (let col = 0; col < 8; col++) {
+    const square = document.createElement('div');
+    square.className = `square ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
+    square.dataset.row = row;
+    square.dataset.col = col;
 
-.white { background-color: #f0d9b5; }
-.black { background-color: #b58863; }
+    if (pieces[row]) {
+      square.textContent = pieces[row][col];
+    }
+
+    square.addEventListener('click', () => {
+      if (selected) {
+        // move
+        square.textContent = selected.textContent;
+        selected.textContent = '';
+        selected = null;
+      } else if (square.textContent !== '') {
+        // select
+        selected = square;
+      }
+    });
+
+    board.appendChild(square);
+  }
+}
